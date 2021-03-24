@@ -24,6 +24,7 @@ executable conf42-web-dev-eta
                      , splitmix == 0.1.0.1
                      , base-orphans == 0.8
                      , servant-server == 0.13
+                     , text == 1.2.3.0
                      , aeson == 1.2.3.0
                      , wai-servlet-handler-jetty == 0.1.2.0
   hs-source-dirs:      src

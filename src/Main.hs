@@ -5,9 +5,12 @@ import Java
 import Servant
 import Servant.Server
 import Data.Aeson
+import Data.Text
+import qualified Data.Text as T
 import Network.Wai.Servlet.Handler.Jetty
 
 type API = "fibonacci" :> Capture "n" Int :> Get '[JSON] Value
+type API2 = "hello" :> QueryParam "name" Text :> Get '[JSON] Value
 
 fib :: Int -> Int
 fib 0 = 1
@@ -17,6 +20,9 @@ fib n = fib (n - 1) + fib (n - 2)
 api :: Proxy API
 api = Proxy
 
+api2 :: Proxy API2
+api2 = Proxy
+
 server :: Application
 server = serve api fibHandler
   where fibHandler n
@@ -24,8 +30,16 @@ server = serve api fibHandler
           = return $ object ["n" .= n, "fib" .= fib n]
           | otherwise = throwError $ err412 { errBody = "Precondition Failed: n >= 0" }
 
+server2 :: Application
+server2 = serve api2 helloworld
+  where helloworld mName = do
+          let message = maybe "Hello, you didn't tell me your name."
+                              (\name -> T.concat ["Hello, ", name, "!"])
+                              mName
+          return $ object [("message", String message)]
+
 main :: IO ()
-main = run 9000 server
+main = run 9000 server2
 
 -- main = putStrLn $ "The 101st prime is " ++ show (primes !! 100)
 -- main = putStrLn $ show (xor True False)

@@ -8,5 +8,7 @@ services:
         source: .
         target: /app
     command: sleep infinity
+    ports:
+      - 9000:9000
 volumes:
   data: {}
